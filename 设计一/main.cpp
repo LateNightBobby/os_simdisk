@@ -1,20 +1,20 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "head.h"
 
-_super_block super_block;				//³¬¼¶¿é
-i_node inode_table[total_inode_num];	//i½áµã
-bool block_bitmap[total_block_num];		//¿éµÄÎ»Í¼
-bool inode_bitmap[total_inode_num];		//i½áµãÎ»Í¼
-FILE* fp;								//Ö¸Ïò´ÅÅÌÎÄ¼þµÄÖ¸Õë
-system_val sys_val;						//ÏµÍ³±äÁ¿
-directory rt_dir;						//¸ùÄ¿Â¼
+_super_block super_block;				//è¶…çº§å—
+i_node inode_table[total_inode_num];	//iç»“ç‚¹
+bool block_bitmap[total_block_num];		//å—çš„ä½å›¾
+bool inode_bitmap[total_inode_num];		//iç»“ç‚¹ä½å›¾
+FILE* fp;								//æŒ‡å‘ç£ç›˜æ–‡ä»¶çš„æŒ‡é’ˆ
+system_val sys_val;						//ç³»ç»Ÿå˜é‡
+directory rt_dir;						//æ ¹ç›®å½•
 
 int main()
 {
-	initFile();//³õÊ¼»¯´ÅÅÌ
-	loadDisk();//¶ÁÈ¡´ÅÅÌ
-	while (!login_success());//µÇÂ¼
-	//¶ÁÈ¡Ö¸Áî
+	initFile();//åˆå§‹åŒ–ç£ç›˜
+	loadDisk();//è¯»å–ç£ç›˜
+	while (!login_success());//ç™»å½•
+	//è¯»å–æŒ‡ä»¤
 	while (true)
 	{
 		printf("%s @ %s>~#", sys_val.current_user.u_name, sys_val.current_path); 
@@ -26,7 +26,7 @@ int main()
 		int cmd_number = find_cmd(command);
 		switch (cmd_number)
 		{
-		case -1:printf("%sÃüÁî²»´æÔÚ\n", command); continue;
+		case -1:printf("%så‘½ä»¤ä¸å­˜åœ¨\n", command); continue;
 		case 1: ss >> arg1; break;
 		case 2: ss >> arg1; ss >> arg3; break;
 		case 3: ss >> arg1; ss >> arg3; break;
@@ -35,7 +35,7 @@ int main()
 		case 6: case 8: ss >> arg3; break; 
 		case 7: ss >> arg1; ss >> arg2; break;
 		case 10: ss >> arg3; break;
-		case 11: write_back(); printf("ÍË³ö\n"); exit(0);
+		case 11: write_back(); printf("é€€å‡º\n"); exit(0);
 		//default:printf("...\n");
 		}
 		switch (cmd_number)
