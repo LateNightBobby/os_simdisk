@@ -43,14 +43,14 @@ void reload()
 }
 int select_inode()
 {
-	for (int i = 0; i < total_inode_num; ++i)//Ñ¡Ôñi½áµã
+	for (int i = 0; i < total_inode_num; ++i)//é€‰æ‹©iç»“ç‚¹
 		if (inode_bitmap[i] == not_used)
 			return i;
 }
 int select_first_block(int block_num)
 {
 	int cnt = 0;
-	for (int i = 0; i < total_block_num; ++i)		//³õ´ÎÆ¥ÅäÕÒ¿é
+	for (int i = 0; i < total_block_num; ++i)		//åˆæ¬¡åŒ¹é…æ‰¾å—
 	{
 		if (block_bitmap[i] == not_used)
 		{
@@ -61,7 +61,7 @@ int select_first_block(int block_num)
 		else cnt = 0;
 	}
 }
-void create_dir(char* dir_name)//µ±Ç°Ä¿Â¼ÏÂ´´½¨Ä¿Â¼
+void create_dir(char* dir_name)//å½“å‰ç›®å½•ä¸‹åˆ›å»ºç›®å½•
 {
 	if (strcmp(dir_name, "root"))
 	{
@@ -71,15 +71,15 @@ void create_dir(char* dir_name)//µ±Ç°Ä¿Â¼ÏÂ´´½¨Ä¿Â¼
 		{
 			if (curr_dir.File_entry[i].exist && !strcmp(dir_name, curr_dir.File_entry[i].file_name) && inode_table[curr_dir.File_entry[i].inode_num].i_ftype == dir_file)
 			{
-				printf("ÒÑÓĞÍ¬ÃûÄ¿Â¼£¬ÎŞ·¨´´½¨\n");
+				printf("å·²æœ‰åŒåç›®å½•ï¼Œæ— æ³•åˆ›å»º\n");
 				return;
 			}
 		}
 	}
 
-	int first_block_pos = select_first_block(dir_size), inode_number = select_inode();//¿ÉÓÃµÄµÚÒ»¸ö¿é±àºÅ,i½áµãºÅ
+	int first_block_pos = select_first_block(dir_size), inode_number = select_inode();//å¯ç”¨çš„ç¬¬ä¸€ä¸ªå—ç¼–å·,iç»“ç‚¹å·
 
-	//i½áµã¸³Öµ
+	//iç»“ç‚¹èµ‹å€¼
 	inode_table[inode_number].i_blocknum = dir_size;
 	inode_table[inode_number].i_first_block = first_block_pos;
 	inode_table[inode_number].i_fsize = sizeof(directory);
@@ -89,20 +89,20 @@ void create_dir(char* dir_name)//µ±Ç°Ä¿Â¼ÏÂ´´½¨Ä¿Â¼
 	inode_table[inode_number].i_uid = sys_val.current_user.u_id;
 	strcpy_s(inode_table[inode_number].i_filename, dir_name);
 	inode_table[inode_number].parent_inode_num = sys_val.current_inode;
-	//³¬¼¶¿éĞŞ¸Ä
+	//è¶…çº§å—ä¿®æ”¹
 	super_block.sb_free_block_num -= dir_size;
 	super_block.sb_free_inode_num -= 1;
-	//Î»Í¼ĞŞ¸Ä
+	//ä½å›¾ä¿®æ”¹
 	for (int i = 0; i < dir_size; i++)
 		block_bitmap[first_block_pos + i] = used;
 	inode_bitmap[inode_number] = used;
 
-	//´´½¨Ä¿Â¼Ïî
+	//åˆ›å»ºç›®å½•é¡¹
 	directory dir;
 	strcpy_s(dir.dir_name, dir_name);
 	dir.file_num = 0;
 	dir.inode_num = inode_number;
-	//²»ÊÇ¸ùÄ¿Â¼ÔòÔÚ¸¸Ä¿Â¼½øĞĞĞŞ¸Ä²¢¼ÓÈëÈë¿Ú
+	//ä¸æ˜¯æ ¹ç›®å½•åˆ™åœ¨çˆ¶ç›®å½•è¿›è¡Œä¿®æ”¹å¹¶åŠ å…¥å…¥å£
 	if (strcmp(dir_name, "root"))
 	{
 		directory par_dir;
@@ -130,7 +130,7 @@ void create_dir(char* dir_name)//µ±Ç°Ä¿Â¼ÏÂ´´½¨Ä¿Â¼
 		if (pos == max_file_num)
 		{
 			fclose(fp);
-			printf("Ä¿Â¼ÒÑÂú£¬ÎŞ·¨ĞÂ½¨\n");
+			printf("ç›®å½•å·²æ»¡ï¼Œæ— æ³•æ–°å»º\n");
 			return;
 		}
 		//strcpy_s(par_dir.File_entry[par_dir.file_num - 1].file_name, dir_name);
@@ -141,7 +141,7 @@ void create_dir(char* dir_name)//µ±Ç°Ä¿Â¼ÏÂ´´½¨Ä¿Â¼
 		fclose(fp);
 	}
 	
-	//ĞŞ¸ÄºóµÄĞ´Èë
+	//ä¿®æ”¹åçš„å†™å…¥
 	errno_t err = fopen_s(&fp, disk_name, "rb+");	
 	if (err != 0) {
 		printf("cannot open \n");
@@ -161,7 +161,7 @@ void create_dir(char* dir_name)//µ±Ç°Ä¿Â¼ÏÂ´´½¨Ä¿Â¼
 bool find_path(char* path_name, system_val* temp)
 {	
 	if (!strcmp(path_name, ".") || !strcmp(path_name, "") || !strcmp(path_name, "/")) return true;
-	//Â·¾¶ÇĞ¸î
+	//è·¯å¾„åˆ‡å‰²
 	char next_dir[max_file_name_length];
 	char rest_path[max_path_length];
 	int pos;
@@ -174,23 +174,23 @@ bool find_path(char* path_name, system_val* temp)
 		if (pos == strlen(path_name) - 1) strcpy_s(rest_path, "");
 		else strncpy_s(rest_path, path_name + pos + 1, strlen(path_name) - pos - 1);
 	}
-	else //ÎŞ¡®/¡¯ 
+	else //æ— â€˜/â€™ 
 	{
 		strcpy_s(next_dir, path_name);
 		strcpy_s(rest_path, "");
 	}
 	//std::cout << next_dir << ' ' << rest_path << endl;
 
-	//ÅĞ¶ÏÇé¿ö
+	//åˆ¤æ–­æƒ…å†µ
 	if (!strcmp(next_dir, ".") || !strcmp(next_dir, "") || !strcmp(next_dir, "/"))
 	{
 		;
 		//return find_path(rest_path, temp);
-	}//µ±Ç°Ä¿Â¼
+	}//å½“å‰ç›®å½•
 	else if (!strcmp(next_dir, ".."))
 	{
 		temp->current_inode = inode_table[temp->current_inode].parent_inode_num;
-		int pos = strlen(rest_path) - 2;//Ä©Î²µÄ/Ìø¹ı
+		int pos = strlen(rest_path) - 2;//æœ«å°¾çš„/è·³è¿‡
 		for (; pos >= 0; --pos)
 		{
 			if (temp->current_path[pos] == '/')
@@ -203,26 +203,26 @@ bool find_path(char* path_name, system_val* temp)
 			//return find_path(rest_path, temp);
 		}
 		else {
-			printf("%sÒÑÔÚ×î¶¥²ãÄ¿Â¼\n", path_name);
+			printf("%så·²åœ¨æœ€é¡¶å±‚ç›®å½•\n", path_name);
 			//return find_path(rest_path, temp);
 		}
-	}//ÉÏÒ»¼¶Ä¿Â¼
+	}//ä¸Šä¸€çº§ç›®å½•
 	else if (!strcmp(next_dir, "root"))
 	{
 		temp->current_inode = 0;
 		strcpy_s(temp->current_path, "root/");
 		//return true;
-	}//¸ùÄ¿Â¼
+	}//æ ¹ç›®å½•
 	
 	else {
-		//¶ÁÈ¡µ±Ç°Ä¿Â¼
+		//è¯»å–å½“å‰ç›®å½•
 		directory dir = read_dir(sys_val.current_inode);
 
-		//Ñ°ÕÒ¶ÔÓ¦Â·¾¶
+		//å¯»æ‰¾å¯¹åº”è·¯å¾„
 		for (int i = 0; i < max_file_num; ++i)
 		{
 			//std::cout << next_dir << ' ' << dir.File_entry[i].file_name << endl;
-			if (dir.File_entry[i].exist && !strcmp(dir.File_entry[i].file_name, next_dir) && inode_table[dir.File_entry[i].inode_num].i_ftype == dir_file)//Ä¿Â¼ÏÂÓĞ¸ÃÂ·¾¶
+			if (dir.File_entry[i].exist && !strcmp(dir.File_entry[i].file_name, next_dir) && inode_table[dir.File_entry[i].inode_num].i_ftype == dir_file)//ç›®å½•ä¸‹æœ‰è¯¥è·¯å¾„
 			{
 				temp->current_inode = dir.File_entry[i].inode_num;
 				strcat_s(temp->current_path, next_dir);
@@ -248,7 +248,7 @@ void show_dir(int inode_num, bool sub, const int level)
 		if (dir.File_entry[i].exist) {
 			printf("|");
 			for (int j = 0; j < level; ++j) printf("__");
-			printf("%s\t\ti½áµãºÅ: %d\n", inode_table[dir.File_entry[i].inode_num].i_filename, dir.File_entry[i].inode_num);
+			printf("%s\t\tiç»“ç‚¹å·: %d\n", inode_table[dir.File_entry[i].inode_num].i_filename, dir.File_entry[i].inode_num);
 			if (inode_table[dir.File_entry[i].inode_num].i_ftype == dir_file && sub) 
 				show_dir(dir.File_entry[i].inode_num, sub, level + 1);
 		}
@@ -258,8 +258,8 @@ bool try_remove(int inode_num)
 {
 	directory dir = read_dir(sys_val.current_inode);
 
-	if (dir.file_num == 0) return true;//Ä¿Â¼ÏÂÎª¿Õ£¬¿ÉÖ±½ÓÉ¾³ı
-	printf("Ä¿±êÄ¿Â¼·Ç¿Õ£¬ÊÇ·ñÉ¾³ı¸ÃÄ¿Â¼ÏÂËùÓĞÎÄ¼ş£¿(y / n)\n");
+	if (dir.file_num == 0) return true;//ç›®å½•ä¸‹ä¸ºç©ºï¼Œå¯ç›´æ¥åˆ é™¤
+	printf("ç›®æ ‡ç›®å½•éç©ºï¼Œæ˜¯å¦åˆ é™¤è¯¥ç›®å½•ä¸‹æ‰€æœ‰æ–‡ä»¶ï¼Ÿ(y / n)\n");
 	char select[2];
 	std::cin.getline(select, 2);
 	if (!strcmp(select, "y")) return true;
@@ -267,22 +267,22 @@ bool try_remove(int inode_num)
 }
 void remove_file(int inode_num)
 {
-	//³¬¼¶¿éĞŞ¸Ä
+	//è¶…çº§å—ä¿®æ”¹
 	super_block.sb_free_block_num += inode_table[inode_num].i_blocknum;
 	super_block.sb_free_inode_num += 1;
 
-	//Î»Í¼ĞŞ¸Ä
+	//ä½å›¾ä¿®æ”¹
 	for (int j = 0; j < inode_table[inode_num].i_blocknum; ++j)
 		block_bitmap[inode_table[inode_num].i_first_block + j] = not_used;
 	inode_bitmap[inode_num] = not_used;
-	//¸¸Ä¿Â¼ĞŞ¸Ä
+	//çˆ¶ç›®å½•ä¿®æ”¹
 	errno_t err = fopen_s(&fp, disk_name, "rb+");
 	if (err != 0)
 	{
 		printf("can't open disk\n");
 		return;
 	}
-		//¶ÁÈ¡¸¸Ä¿Â¼
+		//è¯»å–çˆ¶ç›®å½•
 	directory dir;
 	fseek(fp, inode_table[inode_table[inode_num].parent_inode_num].i_start_addr, SEEK_SET);
 	fread(&dir, sizeof(directory), 1, fp);
@@ -302,13 +302,13 @@ void remove_file(int inode_num)
 	fseek(fp, inode_table[inode_table[inode_num].parent_inode_num].i_start_addr, SEEK_SET);
 	fwrite(&dir, sizeof(directory), 1, fp);
 
-	//É¾³ı¶ÔÓ¦ÎÄ¼ş
+	//åˆ é™¤å¯¹åº”æ–‡ä»¶
 	fseek(fp, inode_table[inode_num].i_start_addr, SEEK_SET);
 	fwrite("", sizeof(char), inode_table[inode_num].i_fsize, fp);
-	//i½áµã³õÊ¼»¯
+	//iç»“ç‚¹åˆå§‹åŒ–
 	inode_table[inode_num].init();
 
-	//ĞŞ¸ÄºóµÄĞ´Èë
+	//ä¿®æ”¹åçš„å†™å…¥
 	fseek(fp, 0, SEEK_SET);
 	fwrite(&super_block, sizeof(_super_block), 1, fp);
 	fwrite(&inode_table, sizeof(i_node), total_inode_num, fp);
@@ -320,16 +320,16 @@ void remove_dir(int inode_num)
 {
 	directory dir = read_dir(sys_val.current_inode);
 	
-	//Çå³ıÄ¿Â¼ÏÂµÄÎÄ¼şºÍÄ¿Â¼
+	//æ¸…é™¤ç›®å½•ä¸‹çš„æ–‡ä»¶å’Œç›®å½•
 	for (int i = 0; i < max_file_num; ++i)
 	{
 		if (dir.File_entry[i].exist)
 		{
-			if (inode_table[dir.File_entry[i].inode_num].i_ftype == dir_file)//É¾³ıÄ¿Â¼
+			if (inode_table[dir.File_entry[i].inode_num].i_ftype == dir_file)//åˆ é™¤ç›®å½•
 			{
 				remove_dir(dir.File_entry[i].inode_num);
 			}
-			else//É¾³ıÎÄ¼ş
+			else//åˆ é™¤æ–‡ä»¶
 			{
 				remove_file(dir.File_entry[i].inode_num);
 			}
@@ -347,7 +347,7 @@ bool try_create_file(char* file_name)
 		{
 			const char* appd = "(new)";
 			strcat_s(file_name, strlen(appd) + 1, appd);
-			printf("ÒÑÓĞÍ¬ÃûÎÄ¼ş£¬ÊÇ·ñÒÔ%sÎªÃû×Ö´´½¨£¿(y / n)\n", file_name);
+			printf("å·²æœ‰åŒåæ–‡ä»¶ï¼Œæ˜¯å¦ä»¥%sä¸ºåå­—åˆ›å»ºï¼Ÿ(y / n)\n", file_name);
 			char select[2];
 			std::cin.getline(select, 2);
 			if (!strcmp(select, "y")) {
@@ -356,7 +356,7 @@ bool try_create_file(char* file_name)
 			}
 			else
 			{
-				printf("È¡ÏûÎÄ¼ş´´½¨\n");
+				printf("å–æ¶ˆæ–‡ä»¶åˆ›å»º\n");
 				return false;
 			}
 		}
@@ -372,29 +372,29 @@ void create_file(char* file_name)
 	{
 		if (!dir.File_entry[i].exist)
 		{
-			//·ÖÅäi½áµãºÍ¿é,³õÊ¼Ö»¸ø1¸ö¿é
+			//åˆ†é…iç»“ç‚¹å’Œå—,åˆå§‹åªç»™1ä¸ªå—
 			int inode_num = select_inode(), first_block_pos = select_first_block(init_file_block_num);
-			//ĞŞ¸ÄÎ»Í¼¡¢³¬¼¶¿é
+			//ä¿®æ”¹ä½å›¾ã€è¶…çº§å—
 			super_block.sb_free_block_num -= init_file_block_num;
 			super_block.sb_free_inode_num -= 1;
 			inode_bitmap[inode_num] = used;
 			block_bitmap[first_block_pos] = used;
-			//ĞŞ¸Äi½áµã±í
+			//ä¿®æ”¹iç»“ç‚¹è¡¨
 			strcpy_s(inode_table[inode_num].i_filename, file_name);
 			//printf("%s", inode_table[inode_num].i_filename);
 			inode_table[inode_num].i_uid = sys_val.current_user.u_id;
 			inode_table[inode_num].i_ftype = normal_file;
 			inode_table[inode_num].parent_inode_num = dir.inode_num;
-			inode_table[inode_num].i_blocknum = init_file_block_num;		//³õÊ¼ÎÄ¼şÄ¬ÈÏÖ»Õ¼Ò»¸ö¿é£¬Á¬Ğø´æ´¢
+			inode_table[inode_num].i_blocknum = init_file_block_num;		//åˆå§‹æ–‡ä»¶é»˜è®¤åªå ä¸€ä¸ªå—ï¼Œè¿ç»­å­˜å‚¨
 			inode_table[inode_num].i_fsize = strlen(file_name) + 1;
 			inode_table[inode_num].i_first_block = first_block_pos;
 			inode_table[inode_num].i_start_addr = super_block.sb_first_data_addr + first_block_pos * block_size;
-			//ĞŞ¸Äµ±Ç°Ä¿Â¼
+			//ä¿®æ”¹å½“å‰ç›®å½•
 			dir.File_entry[i].exist = true;
 			dir.File_entry[i].inode_num = inode_num;
 			dir.file_num += 1;
 			strcpy_s(dir.File_entry[i].file_name, file_name);
-			//Ğ´»Ø´ÅÅÌ
+			//å†™å›ç£ç›˜
 			errno_t err = fopen_s(&fp, disk_name, "rb+");
 			if (err != 0) { printf("error when write back\n"); return; }
 			fseek(fp, 0, SEEK_SET);
@@ -402,7 +402,7 @@ void create_file(char* file_name)
 			fwrite(&inode_table, sizeof(i_node), total_inode_num, fp);
 			fwrite(&block_bitmap, sizeof(bool), total_block_num, fp);
 			fwrite(&inode_bitmap, sizeof(bool), total_inode_num, fp);
-			//Ğ´»Øµ±Ç°Ä¿Â¼
+			//å†™å›å½“å‰ç›®å½•
 			fseek(fp, inode_table[sys_val.current_inode].i_start_addr, SEEK_SET);
 			fwrite(&dir, sizeof(directory), 1, fp);
 
@@ -412,7 +412,7 @@ void create_file(char* file_name)
 			return;
 		}
 	}
-	printf("¸ÃÄ¿Â¼ÒÑÂú£¬ÎŞ·¨´´½¨\n");
+	printf("è¯¥ç›®å½•å·²æ»¡ï¼Œæ— æ³•åˆ›å»º\n");
 }
 char* read_file(char* file_name)
 {
@@ -444,7 +444,7 @@ char* read_file(char* file_name)
 }
 void reallocate(int inode_num, int num_blk)
 {
-	//Ô­ÄÚÈİ
+	//åŸå†…å®¹
 	char* content = new char[inode_table[inode_num].i_blocknum * block_size];
 	errno_t err = fopen_s(&fp, disk_name, "rb+");
 	fseek(fp, inode_table[inode_num].i_start_addr, SEEK_SET);
@@ -484,7 +484,7 @@ char* get_src_file(char* src)
 {
 	char file_name[max_file_name_length];
 	char src_path[max_path_length];
-	//Â·¾¶·Ö¸ô
+	//è·¯å¾„åˆ†éš”
 	int pos;
 	for (pos = strlen(src) - 1; pos >= 0; --pos)
 	{
@@ -493,7 +493,7 @@ char* get_src_file(char* src)
 			break;
 		}
 	}
-	if (pos < 0)//ÎŞ'/'
+	if (pos < 0)//æ— '/'
 	{
 		strcpy_s(file_name, src);
 	}
