@@ -256,7 +256,7 @@ void show_dir(int inode_num, bool sub, const int level)
 }
 bool try_remove(int inode_num)
 {
-	directory dir = read_dir(sys_val.current_inode);
+	directory dir = read_dir(inode_num);
 
 	if (dir.file_num == 0) return true;//目录下为空，可直接删除
 	printf("目标目录非空，是否删除该目录下所有文件？(y / n)\n");
@@ -318,7 +318,7 @@ void remove_file(int inode_num)
 }
 void remove_dir(int inode_num)
 {
-	directory dir = read_dir(sys_val.current_inode);
+	directory dir = read_dir(inode_num);
 	
 	//清除目录下的文件和目录
 	for (int i = 0; i < max_file_num; ++i)
