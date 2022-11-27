@@ -346,7 +346,7 @@ bool try_create_file(char* file_name)
 		if (dir.File_entry[i].exist && inode_table[dir.File_entry[i].inode_num].i_ftype == normal_file && !strcmp(dir.File_entry[i].file_name, file_name))
 		{
 			const char* appd = "(new)";
-			strcat_s(file_name, strlen(appd) + 1, appd);
+			strcat_s(file_name, sizeof(file_name), appd);
 			printf("已有同名文件，是否以%s为名字创建？(y / n)\n", file_name);
 			char select[2];
 			std::cin.getline(select, 2);
