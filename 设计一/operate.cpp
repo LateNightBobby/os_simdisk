@@ -216,7 +216,7 @@ bool find_path(char* path_name, system_val* temp)
 	
 	else {
 		//读取当前目录
-		directory dir = read_dir(sys_val.current_inode);
+		directory dir = read_dir(temp->current_inode);
 
 		//寻找对应路径
 		for (int i = 0; i < max_file_num; ++i)
